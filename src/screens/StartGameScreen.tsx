@@ -1,30 +1,54 @@
-import { FC } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View } from "react-native";
+import { FC, useState } from "react";
+import { ImageBackground, StyleSheet, TextInput, View } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
+import { LinearGradient } from "expo-linear-gradient";
 
 type StartGameScreenProps = {};
 
 const StartGameScreen: FC<StartGameScreenProps> = (props) => {
+  const [enteredNumber, setEnteredNumber] = useState("");
+
+  const onEnteredText = (enteredText: string) => {
+    setEnteredNumber(enteredText);
+  };
+
+  const confirmPressHandler = () => {
+    console.log("confirm");
+  };
+
+  const resetPressHandler = () => {
+    console.log("reset");
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.numberInput}
-          maxLength={2}
-          keyboardType="number-pad"
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-        <View style={styles.buttonsContainer}>
-          <View style={styles.buttonContainer}>
-            <PrimaryButton>Reset</PrimaryButton>
-          </View>
-          <View style={styles.buttonContainer}>
-            <PrimaryButton>Confirm</PrimaryButton>
+    <LinearGradient colors={["#4e0329", "#ddb52f"]} style={styles.container}>
+      <ImageBackground
+        source={require("../../assets/images/background.png")}
+        resizeMode={"cover"}
+        style={styles.container}
+        imageStyle={styles.backgroundImage}
+      >
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.numberInput}
+            maxLength={2}
+            keyboardType="number-pad"
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={onEnteredText}
+            value={enteredNumber}
+          />
+          <View style={styles.buttonsContainer}>
+            <View style={styles.buttonContainer}>
+              <PrimaryButton onPress={resetPressHandler}>Reset</PrimaryButton>
+            </View>
+            <View style={styles.buttonContainer}>
+              <PrimaryButton onPress={confirmPressHandler}>Confirm</PrimaryButton>
+            </View>
           </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </ImageBackground>
+    </LinearGradient>
   );
 };
 export default StartGameScreen;
@@ -32,8 +56,8 @@ export default StartGameScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ddb52f",
   },
+  backgroundImage: { opacity: 0.15 },
   inputContainer: {
     flexDirection: "column",
     justifyContent: "center",
@@ -41,7 +65,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 100,
     marginHorizontal: 24,
-    backgroundColor: "#4e0329",
+    backgroundColor: "#3e0329",
     borderRadius: 8,
     elevation: 4,
     shadowColor: "black",

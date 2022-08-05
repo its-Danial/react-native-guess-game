@@ -3,11 +3,15 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 
 type PrimaryButtonProps = {
   children: React.ReactNode;
+  onPress: () => void;
 };
 
 const PrimaryButton: FC<PrimaryButtonProps> = (props) => {
   return (
-    <Pressable style={({ pressed }) => (pressed ? [styles.pressable, styles.pressed] : styles.pressable)}>
+    <Pressable
+      onPress={props.onPress}
+      style={({ pressed }) => (pressed ? [styles.pressable, styles.pressed] : styles.pressable)}
+    >
       <Text style={styles.text}>{props.children}</Text>
     </Pressable>
   );

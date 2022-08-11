@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     color: "white",
+    fontFamily: "FiraCode-Regular",
   },
   pressed: {
     opacity: 0.75,

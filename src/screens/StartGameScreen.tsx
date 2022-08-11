@@ -1,9 +1,14 @@
 import { FC, useState } from "react";
-import { ImageBackground, StyleSheet, TextInput, View } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
-import { LinearGradient } from "expo-linear-gradient";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
+import Colors from "../../helpers/constants/Colors";
+import Card from "../components/ui/Card";
+import InstructionText from "../components/ui/InstructionText";
+import PrimaryButton from "../components/ui/PrimaryButton";
+import Title from "../components/ui/Title";
 
-type StartGameScreenProps = {};
+type StartGameScreenProps = {
+  onPickNumber: (pickedNumber: number) => void;
+};
 
 const StartGameScreen: FC<StartGameScreenProps> = (props) => {
   const [enteredNumber, setEnteredNumber] = useState("");
@@ -13,42 +18,48 @@ const StartGameScreen: FC<StartGameScreenProps> = (props) => {
   };
 
   const confirmPressHandler = () => {
-    console.log("confirm");
+    const chosenNumber = parseInt(enteredNumber);
+
+    if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber >= 99) {
+      //show alert
+      Alert.alert("Invalid Number", "Number has to be a number between 1 and 99", [
+        { text: "Okay", style: "default", onPress: resetPressHandler },
+      ]);
+
+      return;
+    } else {
+      props.onPickNumber(chosenNumber);
+    }
   };
 
   const resetPressHandler = () => {
-    console.log("reset");
+    setEnteredNumber("");
   };
 
   return (
-    <LinearGradient colors={["#4e0329", "#ddb52f"]} style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/images/background.png")}
-        resizeMode={"cover"}
-        style={styles.container}
-        imageStyle={styles.backgroundImage}
-      >
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.numberInput}
-            maxLength={2}
-            keyboardType="number-pad"
-            autoCorrect={false}
-            autoCapitalize="none"
-            onChangeText={onEnteredText}
-            value={enteredNumber}
-          />
-          <View style={styles.buttonsContainer}>
-            <View style={styles.buttonContainer}>
-              <PrimaryButton onPress={resetPressHandler}>Reset</PrimaryButton>
-            </View>
-            <View style={styles.buttonContainer}>
-              <PrimaryButton onPress={confirmPressHandler}>Confirm</PrimaryButton>
-            </View>
+    <View style={styles.container}>
+      <Title>Guess my Number</Title>
+      <Card>
+        <InstructionText>Enter a number</InstructionText>
+        <TextInput
+          style={styles.numberInput}
+          maxLength={2}
+          keyboardType="number-pad"
+          autoCorrect={false}
+          autoCapitalize="none"
+          onChangeText={onEnteredText}
+          value={enteredNumber}
+        />
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={resetPressHandler}>Reset</PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={confirmPressHandler}>Confirm</PrimaryButton>
           </View>
         </View>
-      </ImageBackground>
-    </LinearGradient>
+      </Card>
+    </View>
   );
 };
 export default StartGameScreen;
@@ -56,16 +67,17 @@ export default StartGameScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 100,
+    alignItems: "center",
   },
-  backgroundImage: { opacity: 0.15 },
   inputContainer: {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    marginTop: 100,
+    marginTop: 36,
     marginHorizontal: 24,
-    backgroundColor: "#3e0329",
+    backgroundColor: Colors.primary800,
     borderRadius: 8,
     elevation: 4,
     shadowColor: "black",
@@ -81,11 +93,11 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     fontSize: 32,
-    fontWeight: "bold",
     textAlign: "center",
-    color: "#ddb52f",
-    borderBottomColor: "#ddb52f",
+    color: Colors.accent500,
+    borderBottomColor: Colors.accent500,
     borderBottomWidth: 2,
     marginVertical: 8,
+    fontFamily: "FiraCode-Regular",
   },
 });

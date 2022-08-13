@@ -4,10 +4,13 @@ import Colors from "../../helpers/constants/Colors";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import Title from "../components/ui/Title";
 
-type GameOverScreenProps = {};
+type GameOverScreenProps = {
+  pickedNumber: number;
+  guessRounds: number;
+  onStartNewGame: () => void;
+};
 
 const GameOverScreen: FC<GameOverScreenProps> = (props) => {
-  const startNewGamePressHandler = () => {};
   return (
     <View style={styles.container}>
       <Title>Game Over!</Title>
@@ -15,10 +18,10 @@ const GameOverScreen: FC<GameOverScreenProps> = (props) => {
         <Image style={styles.image} source={require("../../assets/images/success.png")} />
       </View>
       <Text style={styles.summaryText}>
-        You device needed <Text style={styles.highlightText}>X</Text> rounds to guess the number{" "}
-        <Text style={styles.highlightText}>Y</Text>{" "}
+        You device needed <Text style={styles.highlightText}>{props.guessRounds}</Text> rounds to guess the number{" "}
+        <Text style={styles.highlightText}>{props.pickedNumber}</Text>{" "}
       </Text>
-      <PrimaryButton onPress={startNewGamePressHandler}>Start New Game</PrimaryButton>
+      <PrimaryButton onPress={props.onStartNewGame}>Start New Game</PrimaryButton>
     </View>
   );
 };

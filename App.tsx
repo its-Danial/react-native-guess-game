@@ -44,32 +44,43 @@ export default function App() {
     }
   }, [appIsReady]);
 
-  const [pickedNumber, setPickedNumber] = useState<undefined | number>();
+  // Note: Logic
+  const [pickedNumber, setPickedNumber] = useState<null | number>(null);
   const [gameIsOver, setGameIsOver] = useState(true);
+  const [guessRounds, setGuessRounds] = useState(0);
 
   const pickNumberHandler = (pickedNumber: number) => {
     setPickedNumber(pickedNumber);
     setGameIsOver(false);
   };
 
-  const gameIsOverHandler = () => {
+  const gameIsOverHandler = (numberOfRounds: number) => {
     setGameIsOver(true);
+    setGuessRounds(numberOfRounds);
   };
 
   let currentScreen = <StartGameScreen onPickNumber={pickNumberHandler} />;
-  if (pickedNumber) {
-    console.log(pickedNumber);
 
+  const startNewGameHandler = () => {
+    setPickedNumber(null);
+    setGameIsOver(true);
+    setGuessRounds(0);
+  };
+
+  if (pickedNumber) {
     currentScreen = <GameScreen userNumber={pickedNumber} onGameOver={gameIsOverHandler} />;
   }
 
   if (gameIsOver && pickedNumber) {
-    currentScreen = <GameOverScreen />;
+    currentScreen = (
+      <GameOverScreen pickedNumber={pickedNumber} guessRounds={guessRounds} onStartNewGame={startNewGameHandler} />
+    );
   }
 
   if (!appIsReady) {
     return null;
   }
+
   return (
     <LinearGradient onLayout={onLayoutRootView} colors={[Colors.primary700, Colors.accent500]} style={styles.container}>
       <ImageBackground

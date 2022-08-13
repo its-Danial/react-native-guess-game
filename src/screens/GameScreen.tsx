@@ -1,13 +1,13 @@
-import { FC, useEffect, useState } from "react";
-import { StyleSheet, Text, View, Alert, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Title from "../components/ui/Title";
+import { FC, useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet, View, useWindowDimensions } from "react-native";
 import { generateRandomBetween } from "../../helpers/randomNumber";
+import GuessLogItem from "../components/game/GuessLogItem";
 import NumberContainer from "../components/game/NumberContainer";
-import PrimaryButton from "../components/ui/PrimaryButton";
 import Card from "../components/ui/Card";
 import InstructionText from "../components/ui/InstructionText";
-import GuessLogItem from "../components/game/GuessLogItem";
+import PrimaryButton from "../components/ui/PrimaryButton";
+import Title from "../components/ui/Title";
 
 type GameScreenProps = {
   userNumber: number;
@@ -21,6 +21,7 @@ const GameScreen: FC<GameScreenProps> = (props) => {
   const initialNumber = generateRandomBetween(1, 100, props.userNumber);
   const [guessRounds, setGuessRounds] = useState([initialNumber]);
   const [currentGuess, setCurrentGuess] = useState(initialNumber);
+  const { width, height } = useWindowDimensions();
 
   const nextGuessHandler = (direction: string) => {
     if (
@@ -55,12 +56,10 @@ const GameScreen: FC<GameScreenProps> = (props) => {
   }, []);
 
   const guessRoundsListLength = guessRounds.length;
-  return (
-    <View style={styles.container}>
-      {/* Box to show computer generated guess number */}
-      <Title>Opponents guess</Title>
-      <NumberContainer>{currentGuess}</NumberContainer>
 
+  let displayContent = (
+    <>
+      <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
         <InstructionText style={styles.instructionText}>Higher or lower</InstructionText>
         <View style={styles.buttonsContainer}>
@@ -76,8 +75,33 @@ const GameScreen: FC<GameScreenProps> = (props) => {
           </View>
         </View>
       </Card>
+    </>
+  );
 
-      <View style={styles.flatListContainer}>
+  if (width > 500) {
+    displayContent = (
+      <View style={styles.buttonContainerLandScape}>
+        <View style={styles.buttonContainer}>
+          <PrimaryButton onPress={() => nextGuessHandler("lower")}>
+            <Ionicons name="md-remove" size={24} color="white" />
+          </PrimaryButton>
+        </View>
+        <NumberContainer>{currentGuess}</NumberContainer>
+        <View style={styles.buttonContainer}>
+          <PrimaryButton onPress={() => nextGuessHandler("greater")}>
+            <Ionicons name="md-add" size={24} color="white" />
+          </PrimaryButton>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* Box to show computer generated guess number */}
+      <Title>Opponents guess</Title>
+      {displayContent}
+      <View style={[styles.flatListContainer, { padding: width > 500 ? 2 : 16 }]}>
         <FlatList
           data={guessRounds}
           renderItem={(item) => (
@@ -95,6 +119,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
+    alignItems: "center",
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -102,11 +127,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
   },
+  buttonContainerLandScape: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   instructionText: {
     marginBottom: 18,
   },
   flatListContainer: {
     flex: 1,
-    padding: 16,
   },
 });

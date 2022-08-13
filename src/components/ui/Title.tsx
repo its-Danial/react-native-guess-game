@@ -19,5 +19,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
     fontFamily: "FiraCode-Bold",
+    maxWidth: "80%",
+    width: 300,
   },
 });
